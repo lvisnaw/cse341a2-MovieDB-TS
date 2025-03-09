@@ -1,0 +1,77 @@
+[{
+  "_id": {
+    "$oid": "67a6d149ef4222d77a645499"
+  },
+  "title": "The Dark Knight",
+  "genre": [
+    "Action"
+  ],
+  "releaseYear": 2008,
+  "format": "Blu-ray",
+  "director": "Christopher Nolan",
+  "leadActors": [
+    "Christian Bale",
+    "Heath Ledger"
+  ],
+  "personalRating": 10,
+  "description": "No description available"
+},
+{
+  "_id": {
+    "$oid": "67a6d5fd519223bcc1d64a98"
+  },
+  "title": "Inception",
+  "genre": [
+    "Sci-Fi"
+  ],
+  "releaseYear": 2010,
+  "format": "Blu-ray",
+  "director": "Christopher Nolan",
+  "leadActors": [
+    "Leonardo DiCaprio",
+    "Joseph Gordon-Levitt"
+  ],
+  "personalRating": 9,
+  "__v": 0,
+  "description": "No description available"
+},
+{
+  "_id": {
+    "$oid": "67a703dc02c0ac3f3f9d2d67"
+  },
+  "title": "The Secret Life of Walter Mitty",
+  "genre": [
+    "Adventure"
+  ],
+  "releaseYear": 2013,
+  "format": "Blu-ray",
+  "director": "Ben Stiller",
+  "leadActors": [
+    "Ben Stiller",
+    "Kristen Wiig",
+    "Sean Penn"
+  ],
+  "personalRating": 9,
+  "__v": 0,
+  "description": "No description available"
+},
+{
+  "_id": {
+    "$oid": "67b39803acfb543826c4195a"
+  },
+  "title": "Secondhand Lions",
+  "genre": [
+    "Comedy, Drama, Family"
+  ],
+  "releaseYear": 2003,
+  "format": "DVD",
+  "director": "Tim McCanlies",
+  "leadActors": [
+    "Michael Caine",
+    "Robert Duvall",
+    "Haley Joel Osment"
+  ],
+  "personalRating": 10,
+  "__v": 0,
+  "description": "No description available"
+}]
