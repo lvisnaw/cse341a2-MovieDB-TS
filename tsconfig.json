@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",                 // ✅ Support latest JavaScript features
+    "module": "NodeNext",               // ✅ Use 'NodeNext' for ES module compatibility
+    "outDir": "./dist",                 // ✅ Where compiled files go
+    "rootDir": "./src",                 // ✅ Where source files are located
+    "strict": true,                     // ✅ Enforce strict type checking
+    "esModuleInterop": true,            // ✅ Ensure compatibility with CommonJS modules
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true           // ✅ Allows importing JSON files
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const Movie = require('../models/movie');
-const authenticateJWT = require('../middleware/authMiddleware');
-const authorizeRoles = require('../middleware/roleMiddleware');
+import { Router, Request, Response, NextFunction } from 'express';
+import Movie from '../models/movie';
+import { authenticateJWT } from '../middleware/authMiddleware';
+import authorizeRoles from '../middleware/roleMiddleware';
 
+const router = Router();
 
 /**
  * @openapi
@@ -17,7 +17,7 @@ const authorizeRoles = require('../middleware/roleMiddleware');
  *       200:
  *         description: Successfully retrieved movies.
  */
-router.get('/', async (req, res, next) => {
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const movies = await Movie.find();
     res.json(movies);
@@ -47,7 +47,7 @@ router.get('/', async (req, res, next) => {
  *       404:
  *         description: Movie not found.
  */
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const movie = await Movie.findById(req.params.id);
     if (!movie) return res.status(404).json({ message: 'Movie not found' });
@@ -75,7 +75,7 @@ router.get('/:id', async (req, res, next) => {
  *       201:
  *         description: Movie added successfully.
  */
-router.post('/', authenticateJWT, authorizeRoles('read-write', 'admin'), async (req, res, next) => {
+router.post('/', authenticateJWT, authorizeRoles('read-write', 'admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const movie = new Movie(req.body);
     const newMovie = await movie.save();
@@ -110,7 +110,7 @@ router.post('/', authenticateJWT, authorizeRoles('read-write', 'admin'), async (
  *       200:
  *         description: Movie updated successfully.
  */
-router.put('/:id', authenticateJWT, authorizeRoles('read-write', 'admin'), async (req, res, next) => {
+router.put('/:id', authenticateJWT, authorizeRoles('read-write', 'admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -142,7 +142,7 @@ router.put('/:id', authenticateJWT, authorizeRoles('read-write', 'admin'), async
  *       200:
  *         description: Movie deleted successfully.
  */
-router.delete('/:id', authenticateJWT, authorizeRoles('admin'), async (req, res, next) => {
+router.delete('/:id', authenticateJWT, authorizeRoles('admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const deletedMovie = await Movie.findByIdAndDelete(req.params.id);
     if (!deletedMovie) return res.status(404).json({ message: 'Movie not found' });
@@ -153,4 +153,4 @@ router.delete('/:id', authenticateJWT, authorizeRoles('admin'), async (req, res,
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,11 +1,11 @@
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-const authenticateJWT = require('../middleware/authMiddleware'); // ✅ Require authentication middleware
-const authorizeRoles = require('../middleware/roleMiddleware'); // ✅ Require role-based authorization middleware
+import { Router, Request, Response, NextFunction } from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import User from '../models/user';
+import { authenticateJWT } from '../middleware/authMiddleware';
+import authorizeRoles from '../middleware/roleMiddleware';
 
-const router = express.Router();
+const router = Router();
 
 // ✅ Ensure JWT_SECRET is always set
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -43,7 +43,7 @@ console.log('🔍 JWT_SECRET being used for signing:', JWT_SECRET); // ✅ Debug
  *       201:
  *         description: User registered successfully.
  */
-router.post('/register', async (req, res, next) => {
+router.post('/register', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, password, accountType } = req.body;
 
@@ -88,7 +88,7 @@ router.post('/register', async (req, res, next) => {
  *       200:
  *         description: Login successful, returns JWT token.
  */
-router.post('/login', async (req, res, next) => {
+router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, password } = req.body;
 
@@ -100,11 +100,11 @@ router.post('/login', async (req, res, next) => {
 
     const token = jwt.sign(
       { userId: user._id, accountType: user.accountType },
-      JWT_SECRET, // ✅ Uses JWT_SECRET for signing
+      JWT_SECRET!,
       { expiresIn: '1h' }
     );
 
-    console.log('✅ Generated users.js JWT Token:', token); // ✅ Debugging Log
+    console.log('✅ Generated users.ts JWT Token:', token); // ✅ Debugging Log
 
     res.status(200).json({
       message: 'Login successful',
@@ -147,7 +147,7 @@ router.post('/login', async (req, res, next) => {
  *       200:
  *         description: User updated successfully.
  */
-router.put('/:id', authenticateJWT, authorizeRoles('admin'), async (req, res, next) => { // ✅ Only admins can update user roles
+router.put('/:id', authenticateJWT, authorizeRoles('admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { password, accountType } = req.body;
 
@@ -180,7 +180,7 @@ router.put('/:id', authenticateJWT, authorizeRoles('admin'), async (req, res, ne
  *       200:
  *         description: User logged out successfully.
  */
-router.post('/logout', (req, res) => {
+router.post('/logout', (req: Request, res: Response) => {
   res.status(200).json({ message: 'Logged out successfully. Clear the JWT token from local storage or cookies on the client side.' });
 });
 
@@ -202,7 +202,7 @@ router.post('/logout', (req, res) => {
  *       200:
  *         description: User deleted successfully.
  */
-router.delete('/:id', authenticateJWT, authorizeRoles('admin'), async (req, res, next) => { // ✅ Only admins can delete users
+router.delete('/:id', authenticateJWT, authorizeRoles('admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
@@ -212,4 +212,4 @@ router.delete('/:id', authenticateJWT, authorizeRoles('admin'), async (req, res,
   }
 });
 
-module.exports = router;
+export default router;
