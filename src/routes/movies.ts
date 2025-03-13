@@ -1,5 +1,6 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import Movie from '../models/movie';
+import { Router, Request, Response, NextFunction, RequestHandler } from 'express';
+import mongoose from 'mongoose';
+import Movie, { IMovie } from '../models/movie';
 import { authenticateJWT } from '../middleware/authMiddleware';
 import authorizeRoles from '../middleware/roleMiddleware';
 
@@ -17,14 +18,14 @@ const router = Router();
  *       200:
  *         description: Successfully retrieved movies.
  */
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', (async (req, res, next) => {
   try {
-    const movies = await Movie.find();
+    const movies: IMovie[] = await Movie.find();
     res.json(movies);
   } catch (err) {
     next(err);
   }
-});
+}) as RequestHandler);
 
 /**
  * @openapi
@@ -47,15 +48,20 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
  *       404:
  *         description: Movie not found.
  */
-router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/:id', (async (req, res, next) => {
   try {
-    const movie = await Movie.findById(req.params.id);
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid movie ID format' });
+    }
+
+    const movie: IMovie | null = await Movie.findById(req.params.id);
     if (!movie) return res.status(404).json({ message: 'Movie not found' });
+
     res.json(movie);
   } catch (err) {
     next(err);
   }
-});
+}) as RequestHandler);
 
 /**
  * @openapi
@@ -75,15 +81,20 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
  *       201:
  *         description: Movie added successfully.
  */
-router.post('/', authenticateJWT, authorizeRoles('read-write', 'admin'), async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const movie = new Movie(req.body);
-    const newMovie = await movie.save();
-    res.status(201).json(newMovie);
-  } catch (err) {
-    next(err);
-  }
-});
+router.post(
+  '/',
+  authenticateJWT,
+  authorizeRoles('read-write', 'admin'),
+  (async (req, res, next) => {
+    try {
+      const newMovie = new Movie(req.body);
+      const savedMovie = await newMovie.save();
+      res.status(201).json(savedMovie);
+    } catch (err) {
+      next(err);
+    }
+  }) as RequestHandler
+);
 
 /**
  * @openapi
@@ -110,18 +121,29 @@ router.post('/', authenticateJWT, authorizeRoles('read-write', 'admin'), async (
  *       200:
  *         description: Movie updated successfully.
  */
-router.put('/:id', authenticateJWT, authorizeRoles('read-write', 'admin'), async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!updatedMovie) return res.status(404).json({ message: 'Movie not found' });
-    res.json(updatedMovie);
-  } catch (err) {
-    next(err);
-  }
-});
+router.put(
+  '/:id',
+  authenticateJWT,
+  authorizeRoles('read-write', 'admin'),
+  (async (req, res, next) => {
+    try {
+      if (!mongoose.isValidObjectId(req.params.id)) {
+        return res.status(400).json({ message: 'Invalid movie ID format' });
+      }
+
+      const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+      });
+
+      if (!updatedMovie) return res.status(404).json({ message: 'Movie not found' });
+
+      res.json(updatedMovie);
+    } catch (err) {
+      next(err);
+    }
+  }) as RequestHandler
+);
 
 /**
  * @openapi
@@ -142,15 +164,24 @@ router.put('/:id', authenticateJWT, authorizeRoles('read-write', 'admin'), async
  *       200:
  *         description: Movie deleted successfully.
  */
-router.delete('/:id', authenticateJWT, authorizeRoles('admin'), async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const deletedMovie = await Movie.findByIdAndDelete(req.params.id);
-    if (!deletedMovie) return res.status(404).json({ message: 'Movie not found' });
+router.delete(
+  '/:id',
+  authenticateJWT,
+  authorizeRoles('admin'),
+  (async (req, res, next) => {
+    try {
+      if (!mongoose.isValidObjectId(req.params.id)) {
+        return res.status(400).json({ message: 'Invalid movie ID format' });
+      }
 
-    res.json({ message: 'Movie deleted successfully' });
-  } catch (err) {
-    next(err);
-  }
-});
+      const deletedMovie = await Movie.findByIdAndDelete(req.params.id);
+      if (!deletedMovie) return res.status(404).json({ message: 'Movie not found' });
+
+      res.json({ message: 'Movie deleted successfully' });
+    } catch (err) {
+      next(err);
+    }
+  }) as RequestHandler
+);
 
 export default router;

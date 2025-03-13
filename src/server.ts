@@ -5,7 +5,7 @@ import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
 
-import connectDB from './db/connection';
+import { connectDB } from './db/connection';
 import moviesRouter from './routes/movies';
 import usersRouter from './routes/users';
 import authRoutes from './routes/auth';
@@ -54,7 +54,7 @@ app.get('/', (req, res) => {
 app.use(errorHandler);
 
 // ✅ Start Server Only After Database Connects
-connectDB()
+connectDB(process.env.MONGODB_URI as string) // ✅ Now passing URI
   .then(() => {
     app.listen(port, () => {
       console.log(`🚀 Server running at http://localhost:${port}/api-docs`);
@@ -64,5 +64,6 @@ connectDB()
     console.error('❌ Failed to connect to MongoDB:', err);
     process.exit(1);
   });
+// connectDB()
 
 export default app; // ✅ Ensure compatibility with TypeScript modules
