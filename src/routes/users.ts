@@ -1,17 +1,16 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../models/user';
+import User, { IUser } from '../models/user'; // Import IUser interface
 import { authenticateJWT } from '../middleware/authMiddleware';
 import authorizeRoles from '../middleware/roleMiddleware';
 
 const router = Router();
 
 // ✅ Ensure JWT_SECRET is always set
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET as string;
 if (!JWT_SECRET) {
-  console.error('❌ ERROR: JWT_SECRET is missing! Exiting...');
-  process.exit(1);
+  throw new Error('❌ ERROR: JWT_SECRET is missing! Exiting...');
 }
 
 console.log('🔍 JWT_SECRET being used for signing:', JWT_SECRET); // ✅ Debugging log
@@ -43,7 +42,7 @@ console.log('🔍 JWT_SECRET being used for signing:', JWT_SECRET); // ✅ Debug
  *       201:
  *         description: User registered successfully.
  */
-router.post('/register', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/register', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { username, password, accountType } = req.body;
 
@@ -51,14 +50,16 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
       return res.status(400).json({ message: 'Username, password, and account type are required' });
     }
 
-    const existingUser = await User.findOne({ username });
+    const existingUser: IUser | null = await User.findOne({ username });
     if (existingUser) return res.status(400).json({ message: 'Username already exists' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ username, password: hashedPassword, accountType });
 
     await newUser.save();
-    res.status(201).json({ message: 'User registered successfully' });
+    
+    // ✅ Explicitly return the response
+    return res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     next(error);
   }
@@ -88,19 +89,23 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
  *       200:
  *         description: Login successful, returns JWT token.
  */
-router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/login', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { username, password } = req.body;
 
-    const user = await User.findOne({ username });
+    const user: IUser | null = await User.findOne({ username });
     if (!user) return res.status(401).json({ message: 'Invalid username or password' });
+
+    if (!user.password) {
+      return res.status(401).json({ message: 'Invalid username or password' });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: 'Invalid username or password' });
 
     const token = jwt.sign(
       { userId: user._id, accountType: user.accountType },
-      JWT_SECRET!,
+      JWT_SECRET,
       { expiresIn: '1h' }
     );
 
@@ -147,11 +152,11 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
  *       200:
  *         description: User updated successfully.
  */
-router.put('/:id', authenticateJWT, authorizeRoles('admin'), async (req: Request, res: Response, next: NextFunction) => {
+router.put('/:id', authenticateJWT, authorizeRoles('admin'), async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { password, accountType } = req.body;
 
-    const user = await User.findById(req.params.id);
+    const user: IUser | null = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     if (password) {
@@ -202,7 +207,7 @@ router.post('/logout', (req: Request, res: Response) => {
  *       200:
  *         description: User deleted successfully.
  */
-router.delete('/:id', authenticateJWT, authorizeRoles('admin'), async (req: Request, res: Response, next: NextFunction) => {
+router.delete('/:id', authenticateJWT, authorizeRoles('admin'), async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
