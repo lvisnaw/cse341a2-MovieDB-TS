@@ -1,5 +1,6 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response, Router } from 'express';
 import passport from 'passport';
+import { authenticateJWT } from '../middleware/authMiddleware';
 
 const router = Router();
 
@@ -8,12 +9,6 @@ const router = Router();
  * /auth/google:
  *   get:
  *     summary: Authenticate using Google OAuth
- *     description: |
- *       Redirects to Google for authentication.  
- *       **Note:** This endpoint **cannot be tested in Swagger UI**.  
- *       To test, **open this URL in a browser instead**:  
- *       - **Local:** [http://localhost:3000/auth/google](http://localhost:3000/auth/google)  
- *       - **Production:** [https://cse341a2-movie-lesson7.onrender.com/auth/google](https://cse341a2-movie-lesson7.onrender.com/auth/google)
  *     tags:
  *       - Authentication
  *     responses:
@@ -27,14 +22,6 @@ router.get('/google', passport.authenticate('google', { scope: ['openid', 'profi
  * /auth/google/callback:
  *   get:
  *     summary: Google OAuth callback
- *     description: |
- *       This endpoint handles the response from Google after authentication.  
- *       **Note:** This endpoint **cannot be tested in Swagger UI**.  
- *       To test, follow these steps in a browser:  
- *       1. **Log in via Google OAuth:** [http://localhost:3000/auth/google](http://localhost:3000/auth/google)  
- *          - Production: [https://cse341a2-movie-lesson7.onrender.com/auth/google](https://cse341a2-movie-lesson7.onrender.com/auth/google)  
- *       2. **Check authentication status:** [http://localhost:3000/auth/check-auth](http://localhost:3000/auth/check-auth)  
- *          - Production: [https://cse341a2-movie-lesson7.onrender.com/auth/check-auth](https://cse341a2-movie-lesson7.onrender.com/auth/check-auth)
  *     tags:
  *       - Authentication
  *     responses:
@@ -43,11 +30,12 @@ router.get('/google', passport.authenticate('google', { scope: ['openid', 'profi
  *       401:
  *         description: Unauthorized.
  */
-router.get('/google/callback', 
+router.get(
+  '/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
-  (req: Request, res: Response) => {
-    console.log('✅ User Authenticated:', req.user); // Debugging output
-    res.redirect('/dashboard'); // ✅ Redirect to dashboard
+  (req: Request, res: Response): void => {
+    console.log('✅ User Authenticated:', req.user);
+    res.redirect('/dashboard');
   }
 );
 
@@ -64,9 +52,10 @@ router.get('/google/callback',
  *       401:
  *         description: Unauthorized access.
  */
-router.get('/dashboard', (req: Request, res: Response) => {
+router.get('/dashboard', authenticateJWT, (req: Request, res: Response): void => {
   if (!req.user) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    res.status(401).json({ message: 'Unauthorized' });
+    return;
   }
   res.json({ message: 'Welcome!', user: req.user });
 });
@@ -82,8 +71,12 @@ router.get('/dashboard', (req: Request, res: Response) => {
  *       200:
  *         description: User logged out successfully.
  */
-router.get('/logout', (req: Request, res: Response) => {
-  req.logout(() => {
+router.get('/logout', (req: Request, res: Response, next): void => {
+  req.logout((err) => {
+    if (err) {
+      next(err); // ✅ Handle logout errors properly
+      return;
+    }
     res.redirect('/');
   });
 });
@@ -101,9 +94,10 @@ router.get('/logout', (req: Request, res: Response) => {
  *       401:
  *         description: Not authenticated.
  */
-router.get('/check-auth', (req: Request, res: Response) => {
+router.get('/check-auth', authenticateJWT, (req: Request, res: Response): void => {
   if (!req.user) {
-    return res.status(401).json({ message: 'Not authenticated' });
+    res.status(401).json({ message: 'Not authenticated' });
+    return;
   }
   res.json({ message: 'User is authenticated', user: req.user });
 });
