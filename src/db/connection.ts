@@ -1,20 +1,11 @@
-import { MongoClient, Db } from 'mongodb';
-
-let dbInstance: Db | null = null;
+import mongoose from 'mongoose';
 
 export async function connectDB(uri: string) {
-  if (!dbInstance) {
-    const client = new MongoClient(uri);
-    await client.connect();
-    dbInstance = client.db();
-    console.log('✅ Connected to MongoDB Atlas:', dbInstance.databaseName);
+  try {
+    await mongoose.connect(uri);
+    console.log('✅ Connected to MongoDB Atlas with Mongoose');
+  } catch (error) {
+    console.error('❌ Error connecting to MongoDB:', error);
+    throw error;
   }
-  return dbInstance;
-}
-
-export function getDb() {
-  if (!dbInstance) {
-    throw new Error('Database not initialized. Call connectDB first.');
-  }
-  return dbInstance;
-}
+};
