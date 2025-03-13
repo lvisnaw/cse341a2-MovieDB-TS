@@ -61,7 +61,7 @@ const options = {
     },
     security: [{ BearerAuth: [] }],  // ✅ Apply Bearer Token Authentication globally
   },
-  apis: ['./src/routes/movies.ts', './src/routes/users.ts', './src/routes/auth.ts'], // ✅ Ensure all route files are included
+  apis: ['./src/routes/movies.ts','./src/routes/wishlist.ts', './src/routes/media-types.ts', './src/routes/users.ts', './src/routes/auth.ts'], // ✅ Ensure all route files are included
 };
 
 const swaggerSpec = swaggerJsdoc(options);

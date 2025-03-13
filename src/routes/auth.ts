@@ -1,5 +1,11 @@
-import { Request, Response, Router } from 'express';
-import passport from 'passport';
+import { Router } from 'express';
+import {
+  googleAuth,
+  googleCallback,
+  dashboard,
+  logout,
+  checkAuth,
+} from '../controllers/authController';
 import { authenticateJWT } from '../middleware/authMiddleware';
 
 const router = Router();
@@ -15,7 +21,7 @@ const router = Router();
  *       302:
  *         description: Redirects to Google for authentication.
  */
-router.get('/google', passport.authenticate('google', { scope: ['openid', 'profile', 'email'] }));
+router.get('/google', googleAuth);
 
 /**
  * @openapi
@@ -30,14 +36,7 @@ router.get('/google', passport.authenticate('google', { scope: ['openid', 'profi
  *       401:
  *         description: Unauthorized.
  */
-router.get(
-  '/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
-  (req: Request, res: Response): void => {
-    console.log('✅ User Authenticated:', req.user);
-    res.redirect('/dashboard');
-  }
-);
+router.get('/google/callback', googleCallback);
 
 /**
  * @openapi
@@ -52,13 +51,7 @@ router.get(
  *       401:
  *         description: Unauthorized access.
  */
-router.get('/dashboard', authenticateJWT, (req: Request, res: Response): void => {
-  if (!req.user) {
-    res.status(401).json({ message: 'Unauthorized' });
-    return;
-  }
-  res.json({ message: 'Welcome!', user: req.user });
-});
+router.get('/dashboard', authenticateJWT, dashboard);
 
 /**
  * @openapi
@@ -71,15 +64,7 @@ router.get('/dashboard', authenticateJWT, (req: Request, res: Response): void =>
  *       200:
  *         description: User logged out successfully.
  */
-router.get('/logout', (req: Request, res: Response, next): void => {
-  req.logout((err) => {
-    if (err) {
-      next(err); // ✅ Handle logout errors properly
-      return;
-    }
-    res.redirect('/');
-  });
-});
+router.get('/logout', logout);
 
 /**
  * @openapi
@@ -94,12 +79,6 @@ router.get('/logout', (req: Request, res: Response, next): void => {
  *       401:
  *         description: Not authenticated.
  */
-router.get('/check-auth', authenticateJWT, (req: Request, res: Response): void => {
-  if (!req.user) {
-    res.status(401).json({ message: 'Not authenticated' });
-    return;
-  }
-  res.json({ message: 'User is authenticated', user: req.user });
-});
+router.get('/check-auth', authenticateJWT, checkAuth);
 
 export default router;
