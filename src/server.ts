@@ -7,6 +7,7 @@ import passport from 'passport';
 
 import { connectDB } from './db/connection';
 import moviesRouter from './routes/movies';
+import wishListRouter from './routes/wishlists';
 import usersRouter from './routes/users';
 import authRoutes from './routes/auth';
 import { setupSwagger } from './swagger';
@@ -41,6 +42,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/api/users', usersRouter);
 app.use('/api/movies', moviesRouter);
+app.use('/api/wishlists', wishListRouter);
 
 // ✅ Swagger Docs
 setupSwagger(app);
