@@ -50,3 +50,6 @@ MovieDB is a personal movie database designed to manage and organize your movie 
 - **Mongoose** for MongoDB data modeling.
 - **OAuth** for user authentication.
 - **TypeScript** for type safety.
+
+### Render Link
+- https://cse341a2-moviedb-ts.onrender.com/api-docs/
