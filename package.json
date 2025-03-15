@@ -8,6 +8,7 @@
     "dev_start": "nodemon dist/server.js",
     "dev": "ts-node src/server.ts",
     "build": "tsc",
+    "build_dev": "tsc && node ./dist/swagger.js && ts-node src/server.ts",
     "lint": "eslint --ext .ts src",
     "swagger": "node ./dist/swagger.js"
   },

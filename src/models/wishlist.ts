@@ -9,7 +9,12 @@ interface IWishlist extends Document {
 
 const wishListSchema = new Schema<IWishlist>({
   name: { type: String, required: true },
-  movies: { type: [Schema.Types.ObjectId], ref: 'WishlistMovie', required: true } // Array of movies
+  movies: [
+    {
+      title: { type: String, required: true },
+      genre: { type: [String], required: true },
+      releaseYear: { type: Number, required: true },
+    }]
 });
 
 const Wishlist = mongoose.model<IWishlist>('Wishlist', wishListSchema);

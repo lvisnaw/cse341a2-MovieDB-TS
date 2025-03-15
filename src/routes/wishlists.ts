@@ -7,6 +7,7 @@ import {
   addWishlist,
   updateWishlist,
   deleteWishlist,
+  addMovieToWishlist,
 } from '../controllers/wishlistsController';
 
 const router = Router();
@@ -75,6 +76,38 @@ router.post(
 
 /**
  * @openapi
+ * /api/wishlists/{id}/movies:
+ *   post:
+ *     summary: Add a new Movie to a wishlist
+ *     description: Add a new Movie to a wishlist to the database.
+ *     tags:
+ *       - Wishlists
+*     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The wishlist ID* 
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/WishlistMovie'
+ *     responses:
+ *       201:
+ *         description: Wishlist Movie added successfully.
+ */
+router.post(
+  '/:id/movies',
+  // authenticateJWT,
+  // authorizeRoles('read-write', 'admin'),
+  addMovieToWishlist
+);
+
+/**
+ * @openapi
  * /api/wishlists/{id}:
  *   put:
  *     summary: Update a wishlist
@@ -126,9 +159,12 @@ router.put(
  */
 router.delete(
   '/:id',
-  authenticateJWT,
+  //authenticateJWT,
   // authorizeRoles('admin'),
-  // deleteWishlist
+  deleteWishlist
 );
+
+
+
 
 export default router;

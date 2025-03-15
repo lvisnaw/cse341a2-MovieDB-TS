@@ -33,6 +33,37 @@ const options = {
         }
       },
       schemas: {
+        Wishlist: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', example: '80s Movies' },
+            movies: {
+            type: "array",
+            items: {
+              "$ref": "#/components/schemas/WishlistMovie"
+            },
+            description: "A list of movies in the wishlist"
+          }
+          }
+        },
+        WishlistMovie: {
+        type: "object",
+        properties: {
+          title: {
+            type: "string",
+            example: 'Back to the Future'
+          },
+          genre: {
+            type: "string",
+            example: ['Family', 'Sci-Fi'] 
+          },
+          releaseYear: {
+            type: "integer",
+            example: 1985
+          }
+        },
+        required: ["title", "releaseYear"]
+      },        
         Movie: {
           type: 'object',
           properties: {
