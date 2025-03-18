@@ -1,25 +1,37 @@
 import globals from 'globals';
 import pluginJs from '@eslint/js';
+import pluginJest from 'eslint-plugin-jest';
+import pluginTs from '@typescript-eslint/eslint-plugin';
+import parserTs from '@typescript-eslint/parser';
 
-/** @type {import('eslint').Linter.Config[]} */
+/** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
   {
-    files: ['**/*.js'], // Target all JavaScript files
-    ignores: ['**/testContact.js'], // Exclude testContact.js
+    files: ['**/*.{js,ts}'], // ✅ Includes both JavaScript & TypeScript files
+    ignores: ['**/testContact.js'], // ✅ Exclude testContact.js
     languageOptions: {
-      sourceType: 'commonjs', // Use CommonJS modules
-      ecmaVersion: 'latest', // Enable the latest ECMAScript features
+      parser: parserTs, // ✅ Use TypeScript parser
+      sourceType: 'module', // ✅ Use ES module instead of CommonJS
+      ecmaVersion: 'latest', // ✅ Enable latest ECMAScript features
       globals: {
-        ...globals.node, // Include Node.js-specific globals like require, module, process
+        ...globals.node, // ✅ Include Node.js globals
+        ...globals.jest, // ✅ Ensure Jest globals (describe, test, expect)
       },
     },
+    plugins: { 
+      js: pluginJs, 
+      jest: pluginJest,  // ✅ Corrected Jest plugin format for Flat Config
+      ts: pluginTs,
+    },
     rules: {
-      semi: ['error', 'always'], // Enforce semicolons
-      quotes: ['error', 'single'], // Enforce single quotes
-      'no-unused-vars': 'warn', // Warn for unused variables
-      'no-console': 'off', // Allow console statements (useful for Node.js)
-      eqeqeq: ['error', 'always'], // Enforce strict equality checks
+      semi: ['error', 'always'], // ✅ Enforce semicolons
+      quotes: ['error', 'single'], // ✅ Enforce single quotes
+      'no-unused-vars': 'warn', // ✅ Warn for unused variables
+      'no-console': 'off', // ✅ Allow console logs
+      eqeqeq: ['error', 'always'], // ✅ Enforce strict equality
     },
   },
-  pluginJs.configs.recommended, // Extend ESLint's recommended rules
+  pluginJs.configs.recommended,
+  pluginJest.configs.recommended, // ✅ Ensure Jest’s recommended rules are loaded
+  pluginTs.configs.recommended, // ✅ Ensure TypeScript ESLint rules are loaded
 ];

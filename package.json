@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/server.js",
-    "dev_start": "nodemon dist/server.js",
-    "dev": "ts-node src/server.ts",
+    "test": "jest --runInBand",
+    "start": "node dist/index.js",
+    "dev_start": "nodemon dist/index.js",
+    "dev": "ts-node src/index.ts",
     "build": "tsc",
-    "build_dev": "tsc && node ./dist/swagger.js && ts-node src/server.ts",
-    "lint": "eslint --ext .ts src",
+    "build_dev": "tsc && node ./dist/swagger.js && ts-node src/index.ts",
+    "lint": "eslint --config ./eslint.config.mjs .",
     "swagger": "node ./dist/swagger.js"
   },
   "repository": {
@@ -42,6 +42,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "@types/express-session": "^1.18.1",
+    "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.13.10",
@@ -49,20 +50,22 @@
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
-    "@typescript-eslint/eslint-plugin": "^8.26.0",
-    "@typescript-eslint/parser": "^8.26.0",
-    "eslint": "^9.19.0",
+    "@typescript-eslint/eslint-plugin": "^8.26.1",
+    "@typescript-eslint/parser": "^8.26.1",
+    "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-prettier": "^5.2.3",
     "globals": "^15.14.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.9",
     "prettier": "^3.4.2",
     "supertest": "^7.0.0",
+    "ts-jest": "^29.2.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   },
-  "elsintIgnore": [
+  "eslintIgnore": [
     "testContact.js"
   ],
   "description": ""
