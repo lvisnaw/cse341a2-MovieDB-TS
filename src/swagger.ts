@@ -33,6 +33,37 @@ const options = {
         }
       },
       schemas: {
+        Wishlist: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', example: '80s Movies' },
+            movies: {
+            type: "array",
+            items: {
+              "$ref": "#/components/schemas/WishlistMovie"
+            },
+            description: "A list of movies in the wishlist"
+          }
+          }
+        },
+        WishlistMovie: {
+        type: "object",
+        properties: {
+          title: {
+            type: "string",
+            example: 'Back to the Future'
+          },
+          genre: {
+            type: "string",
+            example: ['Family', 'Sci-Fi'] 
+          },
+          releaseYear: {
+            type: "integer",
+            example: 1985
+          }
+        },
+        required: ["title", "releaseYear"]
+      },        
         Movie: {
           type: 'object',
           properties: {
@@ -61,7 +92,7 @@ const options = {
     },
     security: [{ BearerAuth: [] }],  // ✅ Apply Bearer Token Authentication globally
   },
-  apis: ['./src/routes/movies.ts','./src/routes/wishlist.ts', './src/routes/media-types.ts', './src/routes/users.ts', './src/routes/auth.ts'], // ✅ Ensure all route files are included
+  apis: ['./src/routes/movies.ts','./src/routes/wishlists.ts', './src/routes/media-types.ts', './src/routes/users.ts', './src/routes/auth.ts'], // ✅ Ensure all route files are included
 };
 
 const swaggerSpec = swaggerJsdoc(options);
