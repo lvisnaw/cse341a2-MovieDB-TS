@@ -76,8 +76,8 @@ const options = {
             releaseYear: { type: 'integer', example: 2025 },
             format: { 
               type: 'string', 
-              enum: ['Blu-ray', 'DVD', 'Streaming', 'Digital Download'], 
-              example: 'Streaming' 
+              description: 'MongoDB ObjectId of the format type', 
+              example: '67d9fac9a96d0156f1cf5994' 
             },
             director: { type: 'string', example: 'Director Name' },
             leadActors: {
@@ -88,11 +88,19 @@ const options = {
             description: { type: 'string', example: 'A thrilling action-packed movie with a twist.' }
           },
         },
+        MediaType: {
+          type: 'object',
+          properties: {
+            mediaType: { type: 'string', example: 'Blu-ray' },
+            description: { type: 'string', example: 'High-definition optical disc format' }
+          },
+          required: ['mediaType']
+        }
       },
     },
     security: [{ BearerAuth: [] }],  // ✅ Apply Bearer Token Authentication globally
   },
-  apis: ['./src/routes/movies.ts','./src/routes/wishlists.ts', './src/routes/media-types.ts', './src/routes/users.ts', './src/routes/auth.ts'], // ✅ Ensure all route files are included
+  apis: ['./src/routes/movies.ts','./src/routes/wishlists.ts', './src/routes/mediaType.ts', './src/routes/users.ts', './src/routes/auth.ts'], // ✅ Ensure all route files are included
 };
 
 const swaggerSpec = swaggerJsdoc(options);
