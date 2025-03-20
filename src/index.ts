@@ -1,4 +1,4 @@
-import app from './server';
+import { app } from './server';
 import { connectDB } from './db/connection';
 
 const port: number = parseInt(process.env.PORT || '3000', 10);

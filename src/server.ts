@@ -70,4 +70,4 @@ app.use(errorHandler);
 
 // Trying to get JEST to work
 
-export default app; // ✅ Ensure compatibility with TypeScript modules
+export { app }; // ✅ Ensure compatibility with TypeScript modules
