@@ -5,7 +5,6 @@ import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
 
-import { connectDB } from './db/connection';
 import moviesRouter from './routes/movies';
 import wishListRouter from './routes/wishlists';
 import usersRouter from './routes/users';

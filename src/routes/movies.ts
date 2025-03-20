@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { authenticateJWT } from '../middleware/authMiddleware';
 import authorizeRoles from '../middleware/roleMiddleware';
+import Movie from '../models/movie';
+
 import {
   getAllMovies,
   getMovieById,
@@ -66,12 +68,22 @@ router.get('/:id', getMovieById);
  *       201:
  *         description: Movie added successfully.
  */
-router.post(
-  '/',
-  authenticateJWT,
-  authorizeRoles('read-write', 'admin'),
-  addMovie
-);
+router.post('/', authenticateJWT, authorizeRoles('read-write', 'admin'), async (req, res) => {
+  try {
+      const movie = new Movie(req.body);
+      await movie.save();
+      res.status(201).json(movie); // ✅ Ensure correct status code
+  } catch (error: any) {
+      console.error('❌ Error creating movie:', error);
+      res.status(400).json({ error: error.message });
+  }
+});
+// router.post(
+//   '/',
+//   authenticateJWT,
+//   authorizeRoles('read-write', 'admin'),
+//   addMovie
+// );
 
 /**
  * @openapi
