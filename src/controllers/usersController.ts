@@ -29,7 +29,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
     const newUser = new User({ username, password: hashedPassword, accountType });
 
     await newUser.save();
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ message: 'User registered successfully', _id: newUser._id });
   } catch (error) {
     next(error);
   }
@@ -64,14 +64,43 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
+// export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const { password, accountType } = req.body;
+//     const user: IUser | null = await User.findById(req.params.id);
+
+//     if (!user) {
+//       res.status(404).json({ message: 'User not found' });
+//       return;
+//     }
+
+//     if (password) {
+//       user.password = await bcrypt.hash(password, 10);
+//     }
+
+//     if (accountType) {
+//       user.accountType = accountType;
+//     }
+
+//     await user.save();
+//     res.status(200).json(user);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { password, accountType } = req.body;
+    const { username, password, accountType } = req.body;
     const user: IUser | null = await User.findById(req.params.id);
 
     if (!user) {
       res.status(404).json({ message: 'User not found' });
       return;
+    }
+
+    if (username) {
+      user.username = username;
     }
 
     if (password) {
@@ -83,7 +112,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
     }
 
     await user.save();
-    res.status(200).json({ message: 'User updated successfully' });
+    res.status(200).json(user); // Send back updated user
   } catch (error) {
     next(error);
   }
