@@ -57,17 +57,19 @@ app.get('/', (req, res) => {
 // ✅ Global Error Handler
 app.use(errorHandler);
 
-// ✅ Start Server Only After Database Connects
-connectDB(process.env.MONGODB_URI as string) // ✅ Now passing URI
-  .then(() => {
-    app.listen(port, () => {
-      console.log(`🚀 Server running at http://localhost:${port}/api-docs`);
-    });
-  })
-  .catch((err) => {
-    console.error('❌ Failed to connect to MongoDB:', err);
-    process.exit(1);
-  });
-// connectDB()
+// // ✅ Start Server Only After Database Connects
+// connectDB(process.env.MONGODB_URI as string) // ✅ Now passing URI
+//   .then(() => {
+//     app.listen(port, () => {
+//       console.log(`🚀 Server running at http://localhost:${port}/api-docs`);
+//     });
+//   })
+//   .catch((err) => {
+//     console.error('❌ Failed to connect to MongoDB:', err);
+//     process.exit(1);
+//   });
+// // connectDB()
 
-export default app; // ✅ Ensure compatibility with TypeScript modules
+// Trying to get JEST to work
+
+export { app }; // ✅ Ensure compatibility with TypeScript modules
