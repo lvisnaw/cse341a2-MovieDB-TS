@@ -95,7 +95,37 @@ const options = {
             description: { type: 'string', example: 'High-definition optical disc format' }
           },
           required: ['mediaType']
-        }
+        },
+        User: {
+          type: 'object',
+          properties: {
+            username: { type: 'string', example: 'johndoe' },
+            email: { type: 'string', example: 'johndoe@example.com' },
+            password: { type: 'string', example: 'strongpassword123' },
+            accountType: {
+              type: 'string',
+              enum: ['read-only', 'read-write', 'admin'],
+              example: 'admin'
+            }
+          },
+          required: ['username', 'email', 'password']
+        },
+        UserUpdate: {
+          type: 'object',
+          properties: {
+            username: { type: 'string', example: 'updatedUsername' },
+            password: { type: 'string', example: 'newPassword123' },
+            accountType: { type: 'string', example: 'read-write' }
+          },
+        },
+        LoginRequest: {
+          type: 'object',
+          properties: {
+            username: { type: 'string', example: 'testReadUser' },
+            password: { type: 'string', example: 'readpassword123' }
+          },
+          required: ['email', 'password']
+        }       
       },
     },
     security: [{ BearerAuth: [] }],  // ✅ Apply Bearer Token Authentication globally
