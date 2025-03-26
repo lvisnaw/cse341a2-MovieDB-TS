@@ -8,6 +8,7 @@ import {
   updateWishlist,
   deleteWishlist,
   addMovieToWishlist,
+  deleteMovieFromWishlist,
 } from '../controllers/wishlistsController';
 
 const router = Router();
@@ -69,8 +70,8 @@ router.get('/:id', getWishlistById);
  */
 router.post(
   '/',
-  // authenticateJWT,
-  // authorizeRoles('read-write', 'admin'),
+  authenticateJWT,
+  authorizeRoles('admin'),
   addWishlist
 );
 
@@ -101,9 +102,41 @@ router.post(
  */
 router.post(
   '/:id/movies',
-  // authenticateJWT,
-  // authorizeRoles('read-write', 'admin'),
+  authenticateJWT,
+  authorizeRoles('admin'),
   addMovieToWishlist
+);
+
+/**
+ * @openapi
+ * /api/wishlists/{id}/movies/{movieId}:
+ *   delete:
+ *     summary: Remove a Movie from a wishlist
+ *     description: Remove a Movie from a wishlist in the database.
+ *     tags:
+ *       - Wishlists
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The wishlist ID* 
+ *       - name: movieId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The Movie Id* 
+ *     responses:
+ *       201:
+ *         description: Wishlist updated successfully.
+ */
+router.delete(
+  '/:id/movies/:movieId',
+  authenticateJWT,
+  authorizeRoles('admin'),
+  deleteMovieFromWishlist
 );
 
 /**
@@ -133,8 +166,8 @@ router.post(
  */
 router.put(
   '/:id',
-  // authenticateJWT,
-  // authorizeRoles('read-write', 'admin'),
+  authenticateJWT,
+  authorizeRoles('admin'),
   updateWishlist
 );
 
@@ -159,8 +192,8 @@ router.put(
  */
 router.delete(
   '/:id',
-  //authenticateJWT,
-  // authorizeRoles('admin'),
+  authenticateJWT,
+  authorizeRoles('admin'),
   deleteWishlist
 );
 
