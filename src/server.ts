@@ -10,7 +10,7 @@ import moviesRouter from './routes/movies';
 import wishListRouter from './routes/wishlists';
 import usersRouter from './routes/users';
 import authRoutes from './routes/auth';
-import mediaTypeRouter from './routes/mediaType';
+import mediaTypeRouter from './routes/mediaTypes';
 import { setupSwagger } from './swagger';
 import { errorHandler } from './middleware/errorHandler';
 
@@ -44,7 +44,7 @@ app.use('/auth', authRoutes);
 app.use('/api/users', usersRouter);
 app.use('/api/movies', moviesRouter);
 app.use('/api/wishlists', wishListRouter);
-app.use('/api/mediaType', mediaTypeRouter);
+app.use('/api/media-types', mediaTypeRouter);
 
 // ✅ Swagger Docs
 setupSwagger(app);

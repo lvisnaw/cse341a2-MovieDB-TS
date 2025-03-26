@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { authenticateJWT } from '../middleware/authMiddleware';
 import authorizeRoles from '../middleware/roleMiddleware';
-import { getAllMedia, addMediaType, updateMediaType, deleteMediaType} from '../controllers/mediaTypeController';
+import { getAllMedia, addMediaType, updateMediaType, deleteMediaType} from '../controllers/mediaTypesController';
 
 const router = Router();
 
 /**
  * @openapi
- * /api/mediaTypes:
+ * /api/media-types:
  *   get:
  *     summary: Retrieve a list of available media types
  *     tags:
@@ -24,7 +24,7 @@ router.get('/', getAllMedia);
 
 /**
  * @openapi
- * /api/mediaTypes:
+ * /api/media-types:
  *   post:
  *     summary: Add a new media type
  *     tags:
@@ -36,7 +36,7 @@ router.get('/', getAllMedia);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               mediaType:
  *                 type: string
  *               description:
  *                 type: string
@@ -52,15 +52,15 @@ router.post('/', addMediaType);
 
 /**
  * @openapi
- * /api/mediaTypes/{id}:
+ * /api/media-types/{id}:
  *   put:
  *     summary: Update an existing media type
  *     tags:
  *       - Media Types
  *     parameters:
  *       - in: path
- *         name: id
- *         required: true
+ *         name: id              
+ *         required: true   
  *         description: The ID of the media type to update
  *         schema:
  *           type: string
@@ -89,14 +89,14 @@ router.put('/:id', updateMediaType)
 
 /**
  * @openapi
- * /api/mediaTypes/{id}:
+ * /api/media-types/{id}:
  *   delete:
  *     summary: Delete an existing media type
  *     tags:
  *       - Media Types
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: id                      
  *         required: true
  *         description: The ID of the media type to delete
  *         schema:
@@ -109,6 +109,7 @@ router.put('/:id', updateMediaType)
  *       401:
  *         description: Unauthorized access to delete media type.
  */
+
 router.delete('/:id', deleteMediaType)
 
 export default router;
