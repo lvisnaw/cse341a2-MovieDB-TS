@@ -44,7 +44,7 @@ app.use('/auth', authRoutes);
 app.use('/api/users', usersRouter);
 app.use('/api/movies', moviesRouter);
 app.use('/api/wishlists', wishListRouter);
-app.use('/api/mediaType', mediaTypeRouter);
+app.use('/api/mediaTypes', mediaTypeRouter);
 
 // ✅ Swagger Docs
 setupSwagger(app);

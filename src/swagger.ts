@@ -9,6 +9,12 @@ const options = {
       title: 'My Movies API',
       version: '1.0.0',
     },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Local development server'
+      }
+    ],
     components: {
       securitySchemes: {
         OAuth2: {
