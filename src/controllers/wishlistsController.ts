@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
 import Wishlist, { IWishlist } from '../models/wishlist';
-import WishlistMovie from '../models/wishlistMovie';
+import WishlistMovie, { IWishlistMovie } from '../models/wishlistMovie';
 
 /**
  * Get all wishlists
@@ -119,6 +119,44 @@ export const addMovieToWishlist = async (req: Request, res: Response, next: Next
     await wishlist.save();
 
     res.status(200).json({ message: 'Movie added to wishlist', wishlist });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+    next(error);
+  }
+};
+
+/**
+ * Remove a movie to a wishlist
+ */
+export const deleteMovieFromWishlist = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  try {
+    const { id, movieId } = req.params;
+
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid wishlist ID' });
+    }
+    
+    if (!mongoose.Types.ObjectId.isValid(movieId)) {
+      return res.status(400).json({ message: 'Invalid movie ID' });
+    }
+
+    const wishlist = await Wishlist.findById(id);
+    if (!wishlist) {
+      return res.status(404).json({ message: 'Wishlist not found' });
+    }
+
+    const movieIndex = wishlist.movies.findIndex((movie: IWishlistMovie) => movie.id?.toString() === movieId);
+    
+    if (movieIndex === -1) {
+      return res.status(400).json({ message: 'Movie not found in the wishlist' });
+    }
+
+    // Remove the movie and update the wishlist
+    wishlist.movies.splice(movieIndex, 1);
+    await wishlist.save();
+
+    res.status(200).json({ message: 'Movie removed from wishlist', wishlist });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
     next(error);
