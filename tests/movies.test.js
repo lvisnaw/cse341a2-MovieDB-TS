@@ -148,3 +148,4 @@ describe('Movies API', () => {
 
 });
 //npx jest tests/movies.test.js
+//npx jest --detectOpenHandles
