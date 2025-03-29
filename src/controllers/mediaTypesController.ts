@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 import { Request, Response, NextFunction } from 'express';
 import Media, {IMediaType} from "../models/mediaType";
 
@@ -77,7 +77,7 @@ export const deleteMediaType = async (req: Request, res: Response, next: NextFun
             return res.status(404).json({error: 'Media type not found'})
         }
 
-        return res.status(200).json({ message: 'Wishlist deleted successfully' });
+        return res.status(200).json({ message: 'Media type deleted successfully' });
     } catch (err) {
         console.error("Error deleting media type:", err);
         next(err);

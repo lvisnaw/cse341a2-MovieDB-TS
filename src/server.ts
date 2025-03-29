@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import './middleware/passport'; // ✅ Required to register Google OAuth strategy
+
 import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
@@ -44,7 +46,7 @@ app.use('/auth', authRoutes);
 app.use('/api/users', usersRouter);
 app.use('/api/movies', moviesRouter);
 app.use('/api/wishlists', wishListRouter);
-app.use('/api/media-types', mediaTypeRouter);
+app.use('/api/mediaTypes', mediaTypeRouter);
 
 // ✅ Swagger Docs
 setupSwagger(app);
