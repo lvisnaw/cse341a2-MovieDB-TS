@@ -11,8 +11,12 @@ const options = {
     },
     servers: [
       {
+        url: 'https://cse341a2-moviedb-ts.onrender.com',
+        description: 'Production server',
+      },
+      {
         url: 'http://localhost:3000',
-        description: 'Local development server'
+        description: 'Local development server',
       }
     ],
     components: {
