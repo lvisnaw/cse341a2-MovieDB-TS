@@ -14,7 +14,7 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
       callbackURL:
         process.env.NODE_ENV === 'production'
-          ? 'https://cse341a2-movie-lesson7.onrender.com/auth/google/callback'
+          ? 'https://cse341a2-moviedb-ts.onrender.com/auth/google/callback'
           : 'http://localhost:3000/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, done) => {

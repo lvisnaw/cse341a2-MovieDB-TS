@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import './middleware/passport'; // ✅ Required to register Google OAuth strategy
+
 import express from 'express';
 import session from 'express-session';
 import passport from 'passport';

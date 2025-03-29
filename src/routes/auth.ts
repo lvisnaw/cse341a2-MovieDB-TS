@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import passport from 'passport';
 import {
   googleAuth,
   googleCallback,
@@ -36,7 +37,12 @@ router.get('/google', googleAuth);
  *       401:
  *         description: Unauthorized.
  */
-router.get('/google/callback', googleCallback);
+// router.get('/google/callback', googleCallback);
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }), // 👈 This is required
+  googleCallback
+);
 
 /**
  * @openapi
@@ -51,7 +57,8 @@ router.get('/google/callback', googleCallback);
  *       401:
  *         description: Unauthorized access.
  */
-router.get('/dashboard', authenticateJWT, dashboard);
+// router.get('/dashboard', authenticateJWT, dashboard);
+router.get('/dashboard', dashboard); // 👈 No JWT needed
 
 /**
  * @openapi
