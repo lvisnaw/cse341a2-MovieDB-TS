@@ -15,9 +15,13 @@ import authRoutes from './routes/auth';
 import mediaTypeRouter from './routes/mediaTypes';
 import { setupSwagger } from './swagger';
 import { errorHandler } from './middleware/errorHandler';
+import cors from 'cors';
+
 
 const app = express();
 const port: number = parseInt(process.env.PORT || '3000', 10);
+
+app.use(cors());
 
 // ✅ Ensure JWT_SECRET is always set
 const JWT_SECRET = process.env.JWT_SECRET;
