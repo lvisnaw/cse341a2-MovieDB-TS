@@ -1,8 +1,8 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const { app } = require('../src/server');
-const { connectDB } = require('../src/db/connection');
+import request from 'supertest'; //changed imports to ts esmodules
+import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import { app } from '../src/server';
+import { connectDB } from '../src/db/connection';
 
 describe('Media Types API', () => {
   let server;
@@ -14,6 +14,10 @@ describe('Media Types API', () => {
     server = app.listen(4002);
 
     // ✅ Create a test JWT token for an admin user
+    if (!process.env.JWT_SECRET) { 
+      throw new Error("JWT_SECRET environment variable is required but not set.");
+    }   
+
     token = jwt.sign(
       { userId: 'test-admin-id', accountType: 'admin' },
       process.env.JWT_SECRET,
@@ -26,15 +30,15 @@ describe('Media Types API', () => {
     await server.close();
   });
 
-  test('GET /api/mediaTypes should return an array of media types', async () => {
-    const response = await request(app).get('/api/mediaTypes');
+  test('GET /api/media-types should return an array of media types', async () => {
+    const response = await request(app).get('/api/media-types');
     expect(response.statusCode).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
   });
 
-  test('POST /api/mediaTypes should create a new media type', async () => {
+  test('POST /api/media-types should create a new media type', async () => {
     const response = await request(app)
-      .post('/api/mediaTypes')
+      .post('/api/media-types')
       .set('Authorization', `Bearer ${token}`)
       .send({
         mediaType: 'Test Format',
@@ -47,9 +51,9 @@ describe('Media Types API', () => {
     createdMediaId = response.body._id;
   });
 
-  test('PUT /api/mediaTypes/:id should update the media type', async () => {
+  test('PUT /api/media-types/:id should update the media type', async () => {
     const response = await request(app)
-      .put(`/api/mediaTypes/${createdMediaId}`)
+      .put(`/api/media-types/${createdMediaId}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
         mediaType: 'Updated Format',
@@ -60,9 +64,9 @@ describe('Media Types API', () => {
     expect(response.body).toHaveProperty('mediaType', 'Updated Format');
   });
 
-  test('DELETE /api/mediaTypes/:id should delete the media type', async () => {
+  test('DELETE /api/media-types/:id should delete the media type', async () => {
     const response = await request(app)
-      .delete(`/api/mediaTypes/${createdMediaId}`)
+      .delete(`/api/media-types/${createdMediaId}`)
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.statusCode).toBe(200);
