@@ -15,4 +15,4 @@ const wishlistMovieSchema = new Schema<IWishlistMovie>({
 
 const WishlistMovie = mongoose.model<IWishlistMovie>('WishlistMovie', wishlistMovieSchema);
 export default WishlistMovie;
-export { IWishlistMovie };
+export type { IWishlistMovie };

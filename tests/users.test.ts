@@ -1,8 +1,9 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const { app } = require('../src/server');
-const { connectDB } = require('../src/db/connection');
+import request from 'supertest'; 
+import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import { app } from '../src/server';
+import { connectDB } from '../src/db/connection';
+
 
 describe('Users API', () => {
   let server;
@@ -15,12 +16,17 @@ describe('Users API', () => {
     server = app.listen(4001);
 
     // Create admin token for delete operation
+    if (!process.env.JWT_SECRET) { //added validation instead of 
+    // using process.env.JWT_SECRET'!' which is a bette approach
+      throw new Error("JWT_SECRET environment variable is required but not set.");
+    }   
+
     adminToken = jwt.sign(
       {
         userId: 'test-admin-id',
         accountType: 'admin'
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET, 
       { expiresIn: '1h' }
     );
   });

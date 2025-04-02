@@ -1,26 +1,31 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
-const { app } = require('../src/server');
-const { connectDB } = require('../src/db/connection'); 
+import request from 'supertest'; //changed imports to ts esmodules
+import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import { app } from '../src/server';
+import { connectDB } from '../src/db/connection';
 
 // Creating a general generate token to avoid redundancy. 
-const jwt = require('jsonwebtoken');
+//const jwt = require('jsonwebtoken');
 const generateAuthToken = () => {
+
+    if (!process.env.JWT_SECRET) { 
+        throw new Error("JWT_SECRET environment variable is required but not set.");
+      }   
+      
     return jwt.sign(
       { 
         userId: 'test-user-id',
         accountType: 'admin'
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET, //avoid undfined '!'
       { expiresIn: '1h' }
     );
 };
 
 
 describe('Movies API', () => {
-    let server;
-    let movieId; // To store the movie ID for deletion after the POST test
-
+    let server: any;
+    let movieId: string;
     // Connect to DB and start server before tests
     beforeAll(async () => {
         // Connect to a test database (use a dedicated test database or in-memory MongoDB)
@@ -77,9 +82,10 @@ describe('Movies API', () => {
         expect(response.body).toHaveProperty('title', "Movie Test Title");
 
         // Store the movie ID for deletion in the after hook
-        movieId = response.body._id;
+        movieId = response.body._id; 
+        // To store the movie ID for deletion after the POST test
     });
-
+    
     // GET movie by id
     test('GET /api/movies/:id should return a specific movie', async () => {
         const token = generateAuthToken();
@@ -147,5 +153,5 @@ describe('Movies API', () => {
     });
 
 });
-//npx jest tests/movies.test.js
+//npx jest tests/movies.test.ts
 //npx jest --detectOpenHandles

@@ -13,4 +13,4 @@ const mediaTypeSchema = new Schema<IMediaType>({
 const Media = mongoose.model<IMediaType>('MediaType', mediaTypeSchema);
 
 export default Media;
-export {IMediaType};
+export type {IMediaType};
