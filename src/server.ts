@@ -33,11 +33,20 @@ console.log('🔍 JWT_SECRET being used in server:', JWT_SECRET); // ✅ Debuggi
 
 // ✅ Session & Passport Middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET || JWT_SECRET, // ✅ Default to JWT_SECRET for security
+  secret: process.env.SESSION_SECRET || JWT_SECRET,
   resave: false,
-  saveUninitialized: false, 
-  cookie: { secure: process.env.NODE_ENV === 'production' } // ✅ Secure cookies in production
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  }
 }));
+// app.use(session({
+//   secret: process.env.SESSION_SECRET || JWT_SECRET, // ✅ Default to JWT_SECRET for security
+//   resave: false,
+//   saveUninitialized: false, 
+//   cookie: { secure: process.env.NODE_ENV === 'production' } // ✅ Secure cookies in production
+// }));
 
 app.use(passport.initialize());
 app.use(passport.session());

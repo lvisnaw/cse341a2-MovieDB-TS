@@ -12,14 +12,6 @@ export const googleAuth = passport.authenticate('google', { scope: ['openid', 'p
 /**
  * Google OAuth callback
  */
-// export const googleCallback = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-//   try {
-//     console.log('✅ User Authenticated:', req.user);
-//     res.redirect('/dashboard');
-//   } catch (err) {
-//     next(err);
-//   }
-// };
 export const googleCallback = (req: Request, res: Response): void => {
   console.log('✅ User Authenticated:', req.user);
   res.redirect('/auth/dashboard');
