@@ -1,22 +1,22 @@
-import request from 'supertest'; //changed imports to ts esmodules
+import request from 'supertest';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
+import { Server } from 'http'; // 👈 Add type for server
 import { app } from '../src/server';
 import { connectDB } from '../src/db/connection';
 
 describe('Media Types API', () => {
-  let server;
-  let token;
-  let createdMediaId;
+  let server: Server; // ✅ Explicitly typed
+  let token: string; // ✅ Explicitly typed
+  let createdMediaId: string; // ✅ Explicitly typed
 
   beforeAll(async () => {
     await connectDB(process.env.MONGODB_URI || 'mongodb://localhost:27017/moviedb_test');
     server = app.listen(4002);
 
-    // ✅ Create a test JWT token for an admin user
-    if (!process.env.JWT_SECRET) { 
+    if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET environment variable is required but not set.");
-    }   
+    }
 
     token = jwt.sign(
       { userId: 'test-admin-id', accountType: 'admin' },

@@ -1,40 +1,39 @@
-import request from 'supertest'; 
+import request from 'supertest';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
+import { Server } from 'http'; // ✅ Needed for server type
 import { app } from '../src/server';
 import { connectDB } from '../src/db/connection';
 
-
 describe('Users API', () => {
-  let server;
-  let createdUserId;
-  let token; // User's token for update/delete
-  let adminToken; // Separate token with admin privileges
+  let server: Server;
+  let createdUserId: string;
+  let token: string; // User's token for update/delete
+  let adminToken: string; // Separate token with admin privileges
 
   beforeAll(async () => {
     await connectDB(process.env.MONGODB_URI || 'mongodb://localhost:27017/moviedb_test');
     server = app.listen(4001);
 
-    // Create admin token for delete operation
-    if (!process.env.JWT_SECRET) { //added validation instead of 
-    // using process.env.JWT_SECRET'!' which is a bette approach
-      throw new Error("JWT_SECRET environment variable is required but not set.");
-    }   
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET environment variable is required but not set.');
+    }
 
     adminToken = jwt.sign(
       {
         userId: 'test-admin-id',
-        accountType: 'admin'
+        accountType: 'admin',
       },
-      process.env.JWT_SECRET, 
+      process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
   });
 
   afterAll(async () => {
-    // Clean up: remove test user
     if (createdUserId) {
-      await mongoose.connection.collection('users').deleteOne({ _id: new mongoose.Types.ObjectId(createdUserId) });
+      await mongoose.connection
+        .collection('users')
+        .deleteOne({ _id: new mongoose.Types.ObjectId(createdUserId) });
     }
 
     await mongoose.connection.close();
@@ -45,13 +44,11 @@ describe('Users API', () => {
     const randomSuffix = Math.floor(Math.random() * 10000);
     const uniqueUsername = `jestTestUser${randomSuffix}`;
 
-    const response = await request(app)
-      .post('/api/users/register')
-      .send({
-        username: uniqueUsername,
-        password: 'testPass123',
-        accountType: 'read-write'
-      });
+    const response = await request(app).post('/api/users/register').send({
+      username: uniqueUsername,
+      password: 'testPass123',
+      accountType: 'read-write',
+    });
 
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty('_id');
@@ -59,12 +56,10 @@ describe('Users API', () => {
   });
 
   test('POST /api/users/login should return a token', async () => {
-    const response = await request(app)
-      .post('/api/users/login')
-      .send({
-        username: 'testAdminUser',
-        password: 'adminpassword123'
-      });
+    const response = await request(app).post('/api/users/login').send({
+      username: 'testAdminUser',
+      password: 'adminpassword123',
+    });
 
     token = response.body.token;
     expect(response.statusCode).toBe(200);

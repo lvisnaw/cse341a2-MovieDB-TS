@@ -1,0 +1,11 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "rootDir": ".",                  // ✅ Include everything from project root
+      "outDir": "./dist-tests",        // ✅ Optional, keeps test builds separate
+      "types": ["jest", "node"]
+    },
+    "include": ["src", "tests", "jest.config.ts"]
+  }
+  
+  

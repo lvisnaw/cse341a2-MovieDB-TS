@@ -9,7 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "types": ["jest"],
+    "types": [],
     "resolveJsonModule": true           // ✅ Allows importing JSON files
   },
   "include": ["src"],
