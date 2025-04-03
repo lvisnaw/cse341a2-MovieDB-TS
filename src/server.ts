@@ -19,6 +19,7 @@ import cors from 'cors';
 
 
 const app = express();
+app.set('trust proxy', 1);
 const port: number = parseInt(process.env.PORT || '3000', 10);
 
 app.use(cors());
@@ -41,12 +42,6 @@ app.use(session({
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
   }
 }));
-// app.use(session({
-//   secret: process.env.SESSION_SECRET || JWT_SECRET, // ✅ Default to JWT_SECRET for security
-//   resave: false,
-//   saveUninitialized: false, 
-//   cookie: { secure: process.env.NODE_ENV === 'production' } // ✅ Secure cookies in production
-// }));
 
 app.use(passport.initialize());
 app.use(passport.session());
